@@ -3,6 +3,7 @@ from pygame.locals import *
 from setting import *
 import random
 
+
 class Enemy(pg.sprite.Sprite):
     def __init__(self,x,y,color) -> None:
         pg.sprite.Sprite.__init__(self)
@@ -24,15 +25,18 @@ class Enemy(pg.sprite.Sprite):
         self.timing_counter = 30
         self.timing_count += 1
         return self.rect.x,self.timing_counter,self.timing_count
+
     #縦移動用のメソッド
     def Ymove(self):
         self.rect.y += 20
         self.timing_counter = 30
         self.timing_count += 1
         return self.rect.y,self.timing_counter,self.timing_count
+
     #弾丸発射用のメソッド（クラスのインスタンス化を返す）
     def shot(self,pos):
         return Bullet(pos)
+
     #毎フレームのupdate
     def update(self):
         #タイミングをカウントダウンし、0になればmove_countをアップする
