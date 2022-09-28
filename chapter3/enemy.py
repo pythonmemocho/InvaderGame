@@ -1,23 +1,16 @@
 import pygame as pg
-from pygame import transform
 from pygame.locals import *
 from setting import *
 import random
 
 
 class Enemy(pg.sprite.Sprite):
-    #(削除)initの引数[color]を削除
-    # def __init__(self,x,y,color) -> None:
-    #(追加)画像選択用の引数indをわたす
     def __init__(self,x,y,ind) -> None:
         pg.sprite.Sprite.__init__(self)
-        #(削除)画像を用意したので削除
-        # self.image = pg.Surface((30,20))
 
-        #(追加)リストに使用したい画像を入れる
         self.images = [
-            pg.image.load('chapter3\images\enemy.png').convert_alpha(),
-            pg.image.load('chapter3\images\enemy_up.png').convert_alpha()
+            pg.image.load('InvaderGame-master\chapter3\images\enemy.png').convert_alpha(),
+            pg.image.load('InvaderGame-master\chapter3\images\enemy_up.png').convert_alpha()
         ]
         #(追加)画像選択用のindexを用意。値はインスタンス化の時の引数で指定
         self.index = ind
@@ -29,9 +22,6 @@ class Enemy(pg.sprite.Sprite):
         self.rect.topleft = (x,y)
         self.width = self.image.get_width()
 
-        #(削除)カラーの設定も不要なので削除
-        # self.image.fill(color)
-        
         self.speed = 5
         #動きのタイミング用タイマー、カウント
         self.timing_counter = 30

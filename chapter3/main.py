@@ -27,8 +27,6 @@ class Main:
         #敵の配置（ループで４列作成）
         for i in range(4):
             for j in range(10):
-                #(削除)色の引数設定は不要なので削除。画像に合わせて少し描画位置を調整
-                # self.enemy = Enemy(30 + 42*j, 80 + 36*i,COLORS[i])
                 #(追加)3番目の引数にindexを指定して画像を選択
                 self.enemy = Enemy(28 + 44*j, 80 + 36*i,0)
                 self.enemySprite.add(self.enemy)
@@ -76,8 +74,6 @@ class Main:
         self.enemySprite.empty()
         for i in range(4):
             for j in range(10):
-                #(削除)色の引数設定は不要なので削除。画像に合わせて少し描画位置を調整
-                # self.enemy = Enemy(30 + 42*j, 80 + 36*i,COLORS[i])
                 #(追加)3番目の引数にindexを指定して画像を選択
                 self.enemy = Enemy(28 + 44*j, 80 + 36*i,0)
                 self.enemySprite.add(self.enemy)
@@ -166,9 +162,6 @@ class Main:
 
                 #自機と敵キャラの衝突判定
                 for enemy in self.enemySprite:
-                    #(削除)maskに当たり判定を変更したいので、collide_rectを削除
-                    # if pg.sprite.collide_rect(enemy,self.player):
-
                     #(追加)collide_rectからcollide_maskに変更
                     if pg.sprite.collide_mask(enemy,self.player):
                         #プレイヤースプライトを削除し、ゲーム状態を変更

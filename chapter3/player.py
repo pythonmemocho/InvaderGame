@@ -2,16 +2,10 @@ import pygame as pg
 from pygame.locals import *
 from setting import *
 
-
-class Player(pg.sprite.Sprite):
-    def __init__(self,x,y) -> None:
+class Object_base(pg.sprite.Sprite):
+    def __init__(self, x, y):
         pg.sprite.Sprite.__init__(self)
-
-        #(削除)画像を使用するのでこちらは削除
-        # self.image = pg.Surface((50,20))
-
-        #(追加)使用したい画像をロードし、サイズを調整する
-        self.image = pg.image.load('chapter3\images\player.png').convert_alpha()
+        self.image = pg.image.load("InvaderGame-master\chapter3\images\player.png").convert_alpha()
         self.image = pg.transform.scale(self.image,(40,32))
         #(追加)maskを追加する。maskは当たり判定を限定してくれる
         self.mask = pg.mask.from_surface(self.image)
@@ -21,8 +15,21 @@ class Player(pg.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
-        #(削除)色の設定も不要なので削除
-        # self.image.fill(PLAYER_COLOR)
+
+class Player(Object_base):
+    def __init__(self,x,y) -> None:
+        super().__init__(x, y)
+
+        #(追加)使用したい画像をロードし、サイズを調整する
+        # self.image = pg.image.load("InvaderGame-master\chapter3\images\player.png").convert_alpha()
+        # self.image = pg.transform.scale(self.image,(40,32))
+        #(追加)maskを追加する。maskは当たり判定を限定してくれる
+        self.mask = pg.mask.from_surface(self.image)
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
 
         self.speed = 5
         #弾丸の発射用の変数
@@ -55,7 +62,6 @@ class Player(pg.sprite.Sprite):
         #弾丸スプライトグループの描画
         self.bulletSprite.draw(SCREEN)
         
-
         #弾丸発射可能の間隔
         if not self.bullet_ready:
             self.bullet_cooldown -= 1

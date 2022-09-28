@@ -7,7 +7,7 @@ class Explosion(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         #画像の設定
         self.explo_imgs = []
-        data = pg.image.load('chapter2\images\explosion.png').convert_alpha()
+        data = pg.image.load('InvaderGame-master\chapter3\images\explosion.png').convert_alpha()
         #リストに格納
         for col in range(4):
             for row in range(4):
