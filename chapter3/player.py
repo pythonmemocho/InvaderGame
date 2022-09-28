@@ -3,11 +3,16 @@ from pygame.locals import *
 from setting import *
 
 class Object_base(pg.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, img_num):
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.image.load("InvaderGame-master\chapter3\images\player.png").convert_alpha()
+        images_dir = [
+            "chapter3\images\player.png",
+            "chapter3\images\enemy.png",
+            "chapter3\images\enemy_up.png",
+            "chapter3\images\explosion.png"
+        ]
+        self.image = pg.image.load(images_dir[img_num]).convert_alpha()
         self.image = pg.transform.scale(self.image,(40,32))
-        #(追加)maskを追加する。maskは当たり判定を限定してくれる
         self.mask = pg.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect()
@@ -17,19 +22,8 @@ class Object_base(pg.sprite.Sprite):
 
 
 class Player(Object_base):
-    def __init__(self,x,y) -> None:
-        super().__init__(x, y)
-
-        #(追加)使用したい画像をロードし、サイズを調整する
-        # self.image = pg.image.load("InvaderGame-master\chapter3\images\player.png").convert_alpha()
-        # self.image = pg.transform.scale(self.image,(40,32))
-        #(追加)maskを追加する。maskは当たり判定を限定してくれる
-        self.mask = pg.mask.from_surface(self.image)
-
-        self.rect = self.image.get_rect()
-        self.rect.center = (x,y)
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
+    def __init__(self,x,y,img_num) -> None:
+        super().__init__(x, y, img_num)
 
         self.speed = 5
         #弾丸の発射用の変数
@@ -45,15 +39,15 @@ class Player(Object_base):
     def update(self):
         #キー操作処理
         key = pg.key.get_pressed()
-        if key[K_RIGHT]:
+        if key[K_d]:
             if self.rect.right < WIDTH:
                 self.rect.x += self.speed
-        if key[K_LEFT]:
+        if key[K_a]:
             if self.rect.left > 0:
                 self.rect.x -= self.speed
 
         #スペースキーが押されたらbulletクラスをインスタンス化する
-        if key[K_SPACE]:
+        if key[K_UP]:
             #弾丸が発射できる間隔を限定しておく
             if self.bullet_ready and len(self.bulletSprite) == 0:
                 self.bulletSprite.add(self.shot())

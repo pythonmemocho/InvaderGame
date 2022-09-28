@@ -1,16 +1,21 @@
 import pygame as pg
 from pygame.locals import *
+from player import Object_base
 from setting import *
 import random
 
+
+# class Enemy(Object_base):
+#     def __init__(self,x,y,img_num):
+        
 
 class Enemy(pg.sprite.Sprite):
     def __init__(self,x,y,ind) -> None:
         pg.sprite.Sprite.__init__(self)
 
         self.images = [
-            pg.image.load('InvaderGame-master\chapter3\images\enemy.png').convert_alpha(),
-            pg.image.load('InvaderGame-master\chapter3\images\enemy_up.png').convert_alpha()
+            pg.image.load('chapter3\images\enemy.png').convert_alpha(),
+            pg.image.load('chapter3\images\enemy_up.png').convert_alpha()
         ]
         #(追加)画像選択用のindexを用意。値はインスタンス化の時の引数で指定
         self.index = ind

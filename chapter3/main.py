@@ -14,36 +14,10 @@ class Main:
     def __init__(self) -> None:
         pg.init()
 
-        #プレイヤーのインスタンス化
-        self.player = Player(WIDTH // 2,HEIGHT - 50)
-        #各スプライトグループを設定
-        self.playerSprite = pg.sprite.GroupSingle(self.player)
-        self.enemySprite = pg.sprite.Group()
-
-        #バリアと爆発演出用のグループを設定
-        self.barrierSprite = pg.sprite.Group()
-        self.exploSprite = pg.sprite.Group()
-
-        #敵の配置（ループで４列作成）
-        for i in range(4):
-            for j in range(10):
-                #(追加)3番目の引数にindexを指定して画像を選択
-                self.enemy = Enemy(28 + 44*j, 80 + 36*i,0)
-                self.enemySprite.add(self.enemy)
-        #敵の弾丸のグループも作成しておく（グループの中身はまだ空）
-        self.enemybulletSprite = pg.sprite.Group()
-
-        #バリアの生成
-        self.create_barrier()
+        self.restart()
 
         #現在の状態、0=タイトル画面, 1=ゲーム実行中,3=ゲームオーバー,4=ゲームクリア
         self.game_condition = 0
-        #画面切り替え用のタイマー
-        self.timer = 50
-        #得点
-        self.score = 0
-        #敵の弾丸発射間隔
-        self.enemy_bullet_timer = 50
 
         #自機が敵の弾丸に当たった時のフラグ
         self.hit = False
@@ -67,9 +41,10 @@ class Main:
         self.score = 0
         self.enemy_bullet_timer = 50
         #プレイヤーを再インスタンス化
-        self.player = Player(WIDTH // 2,HEIGHT - 50)
+        self.player = Player(WIDTH // 2,HEIGHT - 50, 0)
         self.playerSprite = pg.sprite.GroupSingle(self.player)
         self.enemybulletSprite = pg.sprite.Group()
+        self.enemySprite = pg.sprite.Group()
         #敵のスプライトグループを空にして、再度入れる
         self.enemySprite.empty()
         for i in range(4):
@@ -77,6 +52,9 @@ class Main:
                 #(追加)3番目の引数にindexを指定して画像を選択
                 self.enemy = Enemy(28 + 44*j, 80 + 36*i,0)
                 self.enemySprite.add(self.enemy)
+        
+        self.barrierSprite = pg.sprite.Group()
+        self.exploSprite = pg.sprite.Group()
 
         #バリアのスプライトグループを空にして、再度メソッドを実行
         self.barrierSprite.empty()
@@ -142,7 +120,6 @@ class Main:
                     self.score += 100
 
                 #敵の弾丸とプレイヤーの衝突判定＋爆発演出
-                #(追加)groupcollideの引数にcollide_maskを追記する
                 for collide in pg.sprite.groupcollide(self.playerSprite,self.enemybulletSprite,True,True,pg.sprite.collide_mask):
                     explosion = Explosion(collide.rect.center)
                     self.exploSprite.add(explosion)
@@ -154,7 +131,6 @@ class Main:
                     if self.timer < 0:
                         self.game_condition = 3
 
-
                 #弾丸・敵とバリアの衝突判定
                 pg.sprite.groupcollide(self.player.bulletSprite,self.barrierSprite,True,True)
                 pg.sprite.groupcollide(self.enemybulletSprite,self.barrierSprite,True,True)
@@ -162,7 +138,6 @@ class Main:
 
                 #自機と敵キャラの衝突判定
                 for enemy in self.enemySprite:
-                    #(追加)collide_rectからcollide_maskに変更
                     if pg.sprite.collide_mask(enemy,self.player):
                         #プレイヤースプライトを削除し、ゲーム状態を変更
                         self.player.kill()
