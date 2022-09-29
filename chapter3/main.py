@@ -6,7 +6,7 @@ from player import *
 from enemy import *
 from title_screen import Title
 import random
-from barrier import *
+from barrier import Barrier, create_barrier
 from explo import *
 
 
@@ -14,43 +14,32 @@ class Main:
     def __init__(self) -> None:
         pg.init()
 
-        self.restart()
-
-        #現在の状態、0=タイトル画面, 1=ゲーム実行中,3=ゲームオーバー,4=ゲームクリア
+        #現在の状態、0=タイトル画面, 1=ゲーム実行中,
+        # 3=ゲームオーバー,4=ゲームクリア
         self.game_condition = 0
 
-        #自機が敵の弾丸に当たった時のフラグ
-        self.hit = False
-        
-    #バリア生成用のメソッドを作成
-    def create_barrier(self):
-        #4つ配置するので、range(4)
-        for ind in range(4):
-            #barrier.pyのshapeリストに沿って、[ 1 ]の場合にクラスをインスタンス化する
-            for i, row in enumerate(shape):
-                for j, col in enumerate(row):
-                    if col == 1:
-                        barrier = Barrier(j*5+32+(ind*(WIDTH // 4)),i*10+(HEIGHT-120))
-                        self.barrierSprite.add(barrier)
-        return barrier,self.barrierSprite
-
     #リスタート処理時実行するメソッド
-    def restart(self):
+    def _start(self):
         self.game_condition = 1
+        self.hit = False
         self.timer = 50
         self.score = 0
+        
         self.enemy_bullet_timer = 50
-        #プレイヤーを再インスタンス化
-        self.player = Player(WIDTH // 2,HEIGHT - 50, 0)
+        
+        #プレイヤーインスタンス化
+        self.player = Player(WIDTH // 2,HEIGHT - 50, 0, 40, 32)
         self.playerSprite = pg.sprite.GroupSingle(self.player)
         self.enemybulletSprite = pg.sprite.Group()
         self.enemySprite = pg.sprite.Group()
+        
         #敵のスプライトグループを空にして、再度入れる
         self.enemySprite.empty()
+        # enemy_set_position(self.enemy, self.enemySprite)
         for i in range(4):
             for j in range(10):
                 #(追加)3番目の引数にindexを指定して画像を選択
-                self.enemy = Enemy(28 + 44*j, 80 + 36*i,0)
+                self.enemy = Enemy(28 + 44*j, 80 + 36*i,1,40, 32, 0 )
                 self.enemySprite.add(self.enemy)
         
         self.barrierSprite = pg.sprite.Group()
@@ -58,7 +47,9 @@ class Main:
 
         #バリアのスプライトグループを空にして、再度メソッドを実行
         self.barrierSprite.empty()
-        self.create_barrier()
+        create_barrier(self.barrierSprite)
+        
+        
 
     #メインループ処理
     def main(self):
@@ -77,8 +68,8 @@ class Main:
                 title = Title()
                 #任意のキーでゲームスタート
                 if pg.key.get_pressed()[K_s]:
-                    self.game_condition = 1
-
+                    self._start()
+                    
             #1：ゲーム実行
             elif self.game_condition == 1: 
                 #マウスカーソルの削除
@@ -120,13 +111,14 @@ class Main:
                     self.score += 100
 
                 #敵の弾丸とプレイヤーの衝突判定＋爆発演出
-                for collide in pg.sprite.groupcollide(self.playerSprite,self.enemybulletSprite,True,True,pg.sprite.collide_mask):
+                for collide in pg.sprite.groupcollide(self.playerSprite,self.enemybulletSprite,\
+                    True,True,pg.sprite.collide_mask):
                     explosion = Explosion(collide.rect.center)
                     self.exploSprite.add(explosion)
                     #フラグを起こす
                     self.hit = True
+                    
                 if self.hit:
-                    #こちらでカウントダウンして少し間を持たせないと、自機の爆発演出が表示されない
                     self.timer -= 1
                     if self.timer < 0:
                         self.game_condition = 3
@@ -165,7 +157,7 @@ class Main:
                 draw_text(f'[ R ]key Restart', 30, WIDTH / 2, int(HEIGHT * 0.60), RED)
                 #任意のキーでリスタート
                 if pg.key.get_pressed()[K_r]:
-                    self.restart()
+                    self._start()
 
             #ゲームクリアの時の処理
             elif self.game_condition == 4:
@@ -177,7 +169,7 @@ class Main:
                     draw_text(f'[ R ]key Restart', 30, WIDTH / 2, int(HEIGHT * 0.60), YELLOW)
                 #任意のキーでリスタート
                 if pg.key.get_pressed()[K_r]:
-                    self.restart()
+                    self._start()
 
             pg.display.update()
             CLOCK.tick(FPS)
@@ -188,3 +180,4 @@ main = Main()
 
 if __name__ == "__main__":
     main.main()
+    

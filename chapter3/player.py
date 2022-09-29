@@ -1,29 +1,11 @@
 import pygame as pg
 from pygame.locals import *
 from setting import *
-
-class Object_base(pg.sprite.Sprite):
-    def __init__(self, x, y, img_num):
-        pg.sprite.Sprite.__init__(self)
-        images_dir = [
-            "chapter3\images\player.png",
-            "chapter3\images\enemy.png",
-            "chapter3\images\enemy_up.png",
-            "chapter3\images\explosion.png"
-        ]
-        self.image = pg.image.load(images_dir[img_num]).convert_alpha()
-        self.image = pg.transform.scale(self.image,(40,32))
-        self.mask = pg.mask.from_surface(self.image)
-
-        self.rect = self.image.get_rect()
-        self.rect.center = (x,y)
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-
+from _object import *
 
 class Player(Object_base):
-    def __init__(self,x,y,img_num) -> None:
-        super().__init__(x, y, img_num)
+    def __init__(self,x,y,img_num,x_size,y_size) -> None:
+        super().__init__(x,y,img_num,x_size,y_size)
 
         self.speed = 5
         #弾丸の発射用の変数
@@ -69,13 +51,13 @@ class Player(Object_base):
 class Bullet(pg.sprite.Sprite):
     def __init__(self,x,y) -> None:
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((5,15))
+        self.image = pg.Surface((2,10))
         self.image.fill(BULLET_COLOR)
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
     
     def update(self):
-        self.rect.y -= 15
+        self.rect.y -= 10
         #弾丸が画面から消えたらスプライトグループから削除
         if self.rect.y < 0:
             self.kill()

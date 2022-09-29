@@ -2,12 +2,15 @@ import pygame as pg
 from pygame.locals import *
 from setting import *
 
+import os
+
 class Explosion(pg.sprite.Sprite):
     def __init__(self,pos):
         pg.sprite.Sprite.__init__(self)
         #画像の設定
         self.explo_imgs = []
-        data = pg.image.load('chapter3\images\explosion.png').convert_alpha()
+        _file_dir = os.path.dirname(__file__)
+        data = pg.image.load(os.path.join(_file_dir,'images\explosion.png')).convert_alpha()
         #リストに格納
         for col in range(4):
             for row in range(4):
@@ -21,10 +24,9 @@ class Explosion(pg.sprite.Sprite):
         self.image = self.explo_imgs[self.index]
         self.rect = self.image.get_rect()
         self.rect.center = (pos)
-        self.radius = int(75 / 2)
         #このクラスがインスタンス化された時間を記録
         self.last_update = pg.time.get_ticks()
-        self.speed = 25
+        self.speed = 20
         
     #毎フレームの処理用メソッド
     def update(self):
